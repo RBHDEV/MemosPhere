@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:memosphere/colors.dart';
 import 'notelist.dart';
+import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,26 +12,69 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  List<Note> filteredList = [];
+  bool Sorted = false;
+
+  // Creating a list that have a function of returning notes that is sorted by the time
+  // at the both bools of Sorted
+  List<Note> sortNotesByTime (List<Note> notes) {
+    if(Sorted) {
+      notes.sort((a, b) => a.lmodifydate.compareTo(b.lmodifydate));
+      }
+    else {
+      notes.sort((b, a) => b.lmodifydate.compareTo(a.lmodifydate));
+      }
+
+    print('You Clicked the Sort Button');
+    Sorted = !Sorted;
+    return notes;
+    }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    filteredList = sampleNotes;
+  }
+
+  void onSearchTextChange (String searchInput) {
+    setState(() {
+      filteredList = sampleNotes.where((note) => 
+      note.content!.toLowerCase().contains(searchInput.toLowerCase()) ||
+      note.title!.toLowerCase().contains(searchInput.toLowerCase())
+      ).toList();
+    });
+    }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: thebg,
+      backgroundColor: the60,
 
       appBar: AppBar(
-        backgroundColor: thebg,
+        backgroundColor: the60,
+        forceMaterialTransparency: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
               'MemosPhere',
               style: TextStyle(
-                color: the10,
-                fontSize: 25,
+                color: theblue,
+                fontSize: 20,
+                letterSpacing: 2,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'queensides',
                 ),
               ),
             
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  filteredList = sortNotesByTime(filteredList);
+                  });
+                },
               padding: const EdgeInsets.all(0),
               icon: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -37,11 +82,11 @@ class _HomeState extends State<Home> {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: the60.withOpacity(0.7),
+                    color: theblue.withOpacity(0.8),
                     ),
                   child: const Icon(
                       Icons.sort,
-                      color: the10,
+                      color: the60,
                       ),
                   ),
                 ),
@@ -50,14 +95,15 @@ class _HomeState extends State<Home> {
           ),
         ),
 
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: TextField(
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 30, 17, 0),
+        child: Column(
+          children: [
+            TextField(
+              onChanged: onSearchTextChange,
               decoration: InputDecoration(
-                fillColor: the60.withOpacity(0.6), filled: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 12,),
+                fillColor: the30.withOpacity(0.8), filled: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide(color: the60),
@@ -66,88 +112,97 @@ class _HomeState extends State<Home> {
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide(color: Colors.transparent)
                   ),
-
             
-                hintText: 'Search',
+            
+                hintText: 'Search notes...',
                 hintStyle: TextStyle(
-                  color: the10.withOpacity(0.8),
-                  fontSize: 18,
+                  color: theblack.withOpacity(0.3),
+                  fontSize: 16,
                   ),
             
                 prefixIcon: Icon(
                   Icons.search,
-                  color: the10.withOpacity(0.8)
+                  color: the10
                   ),
-
+            
                 ),
               ),
-            ),
-          
-          Expanded(
-            child: ListView.builder(
-              itemCount: sampleNotes.length,
-              itemBuilder:(context, index) {
-                  return  Card(
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)
-                    ),
-                  child: ListTile(
-                    title: RichText(
-                      maxLines: 3,
-                      text: TextSpan(
-                        text: '${sampleNotes[index].title}\n',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          height: 1.5,
-                          ),
-                        children: [
-                          TextSpan(
-                            text: sampleNotes[index].content,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 14,
-                              height: 1.5,
+
+
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.only(top: 30),
+                itemCount: filteredList.length,
+                itemBuilder:(context, index) {
+                    return  Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                        ),
+                    child: ListTile(
+                      onTap: () {},
+                      tileColor: the30,
+                      contentPadding: EdgeInsets.all(15),
+                      title: RichText(
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          text: '${filteredList[index].title}\n',
+                          style: GoogleFonts.montserrat(textStyle: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                            height: 1.5,
+                            ),),
+                          children: [
+                            TextSpan(
+                              text: filteredList[index].content,
+                              style: GoogleFonts.montserrat(textStyle: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                height: 1.5,
+                                ),),
                               ),
-                            ),
-                          ]
+                            ]
+                          ),
                         ),
-                      ),
-                    
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Last Edit : 01/02/2024',
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: Colors.grey.shade800,
+                      
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          'Last Edit: ${DateFormat('EEE MMM d, yyyy h:mm a').format(filteredList[index].lmodifydate)}',
+                          style: GoogleFonts.montserrat(textStyle: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey.shade800,
+                            ),),
+                          ),
+                        ),
+                      
+                      trailing: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.delete,
+                          color: the10,
                           ),
                         ),
                       ),
-                    
-                    trailing: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.delete,
-                        color: the30,
-                        ),
-                      ),
-                    ),
-                  );
-                }
+                    );
+                  }
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
+        backgroundColor: the10,
         child: Icon(
           Icons.add,
           size: 35,
-          color: the30,
+          color: the60,
 
           ),
         ),
