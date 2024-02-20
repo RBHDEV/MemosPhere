@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
       notes.sort((a, b) => a.lmodifydate.compareTo(b.lmodifydate));
       }
     else {
-      notes.sort((b, a) => b.lmodifydate.compareTo(a.lmodifydate));
+      notes.sort((b, a) => a.lmodifydate.compareTo(b.lmodifydate));
       }
 
     print('You Clicked the Sort Button');
@@ -45,6 +45,12 @@ class _HomeState extends State<Home> {
       note.title!.toLowerCase().contains(searchInput.toLowerCase())
       ).toList();
     });
+    }
+
+  void deleteNote (int index) {
+    setState(() {
+      filteredList.removeAt(index);
+      });
     }
 
   @override
@@ -75,6 +81,7 @@ class _HomeState extends State<Home> {
                   filteredList = sortNotesByTime(filteredList);
                   });
                 },
+              
               padding: const EdgeInsets.all(0),
               icon: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -174,7 +181,7 @@ class _HomeState extends State<Home> {
                           'Last Edit: ${DateFormat('EEE MMM d, yyyy h:mm a').format(filteredList[index].lmodifydate)}',
                           style: GoogleFonts.montserrat(textStyle: TextStyle(
                             fontSize: 10,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: FontWeight.w400,
                             fontStyle: FontStyle.italic,
                             color: Colors.grey.shade800,
                             ),),
@@ -182,7 +189,13 @@ class _HomeState extends State<Home> {
                         ),
                       
                       trailing: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          final result = await _Confirmation(context);
+                          
+                          if(result) {
+                            deleteNote(index);
+                            }
+                          },
                         icon: Icon(Icons.delete,
                           color: the10,
                           ),
@@ -208,4 +221,63 @@ class _HomeState extends State<Home> {
         ),
       );
     }
+
+  Future<dynamic> _Confirmation(BuildContext context) {
+    return showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: the30,
+                              icon: Icon(
+                                Icons.info,
+                                color: Colors.grey[800],
+                                ),
+
+                              title: Text(
+                                'Are you sure wanna delete this note?',
+                                style: GoogleFonts.montserrat(textStyle: TextStyle(
+                                  color: theblack,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w500
+                                  ),),
+                                ),
+
+                              content: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                      },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: theyes,
+                                      ),
+                                    child: Text(
+                                      'Yes',
+                                      style: TextStyle(
+                                        color: the60,
+                                        ),
+                                      ),
+                                    ),
+
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                      },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: theno,
+                                      ),
+                                    child: Text(
+                                      'No',
+                                      style: TextStyle(
+                                        color: the60,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          );
+  }
   }
