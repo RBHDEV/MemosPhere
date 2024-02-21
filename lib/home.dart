@@ -68,7 +68,7 @@ class _HomeState extends State<Home> {
              Text(
               'MemosPhere',
               style: TextStyle(
-                color: theblue,
+                color: Headline,
                 fontSize: 20,
                 letterSpacing: 2,
                 fontWeight: FontWeight.bold,
@@ -90,11 +90,11 @@ class _HomeState extends State<Home> {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: theblue.withOpacity(0.8),
+                    color: button.withOpacity(0.8),
                     ),
                   child:  Icon(
                       Icons.sort,
-                      color: the60,
+                      color: buttonText,
                       ),
                   ),
                 ),
@@ -110,27 +110,28 @@ class _HomeState extends State<Home> {
             TextField(
               onChanged: onSearchTextChange,
               decoration: InputDecoration(
-                fillColor: the30.withOpacity(0.8), filled: true,
+                fillColor: Colors.transparent,
+                hoverColor: buttonhover,
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: the60),
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: Stroke, width: 3),
                   ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Colors.transparent)
+                  borderSide: BorderSide(color: Stroke, width: 2)
                   ),
             
             
                 hintText: 'Search notes...',
                 hintStyle: TextStyle(
-                  color: theblack.withOpacity(0.3),
+                  color: Stroke.withOpacity(0.3),
                   fontSize: 16,
                   ),
             
                 prefixIcon: Icon(
                   Icons.search,
-                  color: the10
+                  color: Stroke
                   ),
             
                 ),
@@ -150,6 +151,8 @@ class _HomeState extends State<Home> {
                     child: ListTile(
                       onTap: () {},
                       tileColor: the30,
+                      hoverColor: buttonhover,
+                      splashColor: buttonhover.withOpacity(0.6),
                       contentPadding: EdgeInsets.all(15),
                       title: RichText(
                         maxLines: 3,
@@ -157,7 +160,7 @@ class _HomeState extends State<Home> {
                         text: TextSpan(
                           text: '${filteredList[index].title}\n',
                           style: GoogleFonts.montserrat(textStyle: TextStyle(
-                            color: Colors.black,
+                            color: Headline,
                             fontWeight: FontWeight.w700,
                             fontSize: 18,
                             height: 1.5,
@@ -166,7 +169,7 @@ class _HomeState extends State<Home> {
                             TextSpan(
                               text: filteredList[index].content,
                               style: GoogleFonts.montserrat(textStyle: TextStyle(
-                                color: Colors.black,
+                                color: Paragraph,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 14,
                                 height: 1.5,
@@ -198,7 +201,7 @@ class _HomeState extends State<Home> {
                             }
                           },
                         icon: Icon(Icons.delete,
-                          color: the10,
+                          color: delete,
                           ),
                         ),
                       ),
@@ -211,19 +214,33 @@ class _HomeState extends State<Home> {
         ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => editpage()
               )
             );
+
+          if(result != null) {
+            setState(() {
+              sampleNotes.add(
+                Note(
+                id: sampleNotes.length, 
+                title: result[1], 
+                content: result[2], 
+                lmodifydate: DateTime.now())
+                );
+              filteredList = sampleNotes;
+              });
+            }
           },
-        backgroundColor: the10,
+
+        backgroundColor: button,
         child: Icon(
           Icons.add,
           size: 35,
-          color: the60,
+          color: buttonText,
           ),
         ),
       );
@@ -235,16 +252,17 @@ class _HomeState extends State<Home> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               backgroundColor: the30,
+                              
                               icon: Icon(
                                 Icons.info,
-                                color: Colors.grey[800],
+                                color: Stroke.withOpacity(0.6),
                                 ),
 
                               title: Text(
                                 'Are you sure wanna delete this note?',
                                 style: GoogleFonts.montserrat(textStyle: TextStyle(
                                   fontSize: 18,
-                                  color: theblack,
+                                  color: Headline,
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w600
                                   ),),
@@ -253,6 +271,7 @@ class _HomeState extends State<Home> {
                               content: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
+                                  
                                   ElevatedButton(
                                     onPressed: () {
                                       Navigator.pop(context, true);
@@ -263,7 +282,7 @@ class _HomeState extends State<Home> {
                                     child: Text(
                                       'Yes',
                                       style: TextStyle(
-                                        color: the60,
+                                        color: buttonText,
                                         ),
                                       ),
                                     ),
@@ -278,7 +297,7 @@ class _HomeState extends State<Home> {
                                     child: Text(
                                       'No',
                                       style: TextStyle(
-                                        color: the60,
+                                        color: buttonText,
                                         ),
                                       ),
                                     ),

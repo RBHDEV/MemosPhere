@@ -9,6 +9,10 @@ class editpage extends StatefulWidget {
 }
 
 class _editpageState extends State<editpage> {
+
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _contentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +26,7 @@ class _editpageState extends State<editpage> {
               
               IconButton(
                 onPressed: () {
+                  Navigator.pop(context);
                   },
                 
                 padding:  EdgeInsets.all(0),
@@ -31,11 +36,11 @@ class _editpageState extends State<editpage> {
                     height: 40,
                     width: 40,
                     decoration: BoxDecoration(
-                      color: theblue.withOpacity(0.8),
+                      color: button.withOpacity(0.8),
                       ),
                     child:  Icon(
                         Icons.arrow_back,
-                        color: the60,
+                        color: buttonText,
                         ),
                     ),
                   ),
@@ -47,20 +52,57 @@ class _editpageState extends State<editpage> {
             child: ListView(
               children: [
                 TextField(
+                  controller: _titleController,
+                  style: TextStyle(
+                    color: Headline,
+                    fontSize: 30,
+                    ),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Title',
                     hintStyle: TextStyle(
-                      color: 
+                      color: Headline.withOpacity(0.5),
+                      fontSize: 30,
+                      ),
+                    ),
+                  ),
+
+                TextField(
+                  controller: _contentController,
+                  style: TextStyle(
+                    color: Headline,
+                    ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Type the Note...',
+                    hintStyle: TextStyle(
+                      color: Headline.withOpacity(0.5),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-
           ],       
         ),
+      ),
+
+    floatingActionButton: SizedBox(
+      height: 60,
+      width: 80,
+      child: FloatingActionButton(
+          onPressed: () {
+            Navigator.pop(context,[
+              _titleController, _contentController
+              ]);
+            },
+          backgroundColor: button,
+          child: Icon(
+            Icons.save,
+            size: 35,
+            color: buttonText,
+            ),
+          ),
     ),
 
       

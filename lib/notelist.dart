@@ -1,5 +1,5 @@
 class Note {
-String? id;
+final id;
 String? title;
 String? content;
 final lmodifydate;
