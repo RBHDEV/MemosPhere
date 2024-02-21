@@ -65,7 +65,7 @@ class _HomeState extends State<Home> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+             Text(
               'MemosPhere',
               style: TextStyle(
                 color: theblue,
@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
                   });
                 },
               
-              padding: const EdgeInsets.all(0),
+              padding:  EdgeInsets.all(0),
               icon: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
@@ -92,7 +92,7 @@ class _HomeState extends State<Home> {
                   decoration: BoxDecoration(
                     color: theblue.withOpacity(0.8),
                     ),
-                  child: const Icon(
+                  child:  Icon(
                       Icons.sort,
                       color: the60,
                       ),
@@ -224,7 +224,6 @@ class _HomeState extends State<Home> {
           Icons.add,
           size: 35,
           color: the60,
-
           ),
         ),
       );
