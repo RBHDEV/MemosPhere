@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memosphere/colors.dart';
+import 'package:memosphere/editpage.dart';
 import 'notelist.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -210,7 +211,14 @@ class _HomeState extends State<Home> {
         ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => editpage()
+              )
+            );
+          },
         backgroundColor: the10,
         child: Icon(
           Icons.add,
@@ -236,9 +244,10 @@ class _HomeState extends State<Home> {
                               title: Text(
                                 'Are you sure wanna delete this note?',
                                 style: GoogleFonts.montserrat(textStyle: TextStyle(
+                                  fontSize: 18,
                                   color: theblack,
                                   fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500
+                                  fontWeight: FontWeight.w600
                                   ),),
                                 ),
 
