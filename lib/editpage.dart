@@ -1,17 +1,38 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:memosphere/colors.dart';
+import 'package:memosphere/notelist.dart';
 
-class editpage extends StatefulWidget {
-  const editpage({super.key});
+class EditPage extends StatefulWidget {
+  final Note? note;
+  const EditPage({super.key, this.note});
 
   @override
-  State<editpage> createState() => _editpageState();
+  State<EditPage> createState() => _EditPageState();
 }
-
-class _editpageState extends State<editpage> {
+class _EditPageState extends State<EditPage> {
 
   TextEditingController _titleController = TextEditingController();
   TextEditingController _contentController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.note != null) {
+      _titleController = TextEditingController(text: widget.note!.title);
+      _contentController = TextEditingController(text: widget.note!.content);
+      }
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Disposing controllers
+    _titleController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +44,10 @@ class _editpageState extends State<editpage> {
           children: [Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              
               IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                   },
-                
                 padding:  EdgeInsets.all(0),
                 icon: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
@@ -72,6 +91,7 @@ class _editpageState extends State<editpage> {
                   style: TextStyle(
                     color: Headline,
                     ),
+                  maxLines: null,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Type the Note...',
@@ -83,7 +103,7 @@ class _editpageState extends State<editpage> {
                 ],
               ),
             ),
-          ],       
+          ],
         ),
       ),
 
@@ -93,19 +113,24 @@ class _editpageState extends State<editpage> {
       child: FloatingActionButton(
           onPressed: () {
             Navigator.pop(context,[
-              _titleController, _contentController
+              _titleController,
+              _contentController,
               ]);
             },
+
+          shape: RoundedRectangleBorder(
+            borderRadius:  BorderRadius.circular(25)
+            ),
           backgroundColor: button,
+
           child: Icon(
             Icons.save,
             size: 35,
             color: buttonText,
             ),
           ),
-    ),
-
-      
+      ),
     );
   }
+
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:memosphere/colors.dart';
 import 'package:memosphere/editpage.dart';
@@ -15,39 +17,38 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List<Note> filteredList = [];
-  bool Sorted = false;
+  bool isSorted = true;
 
   // Creating a list that have a function of returning notes that is sorted by the time
   // at the both bools of Sorted
   List<Note> sortNotesByTime (List<Note> notes) {
-    if(Sorted) {
+    if(isSorted) {
       notes.sort((a, b) => a.lmodifydate.compareTo(b.lmodifydate));
       }
     else {
       notes.sort((b, a) => a.lmodifydate.compareTo(b.lmodifydate));
       }
-
-    print('You Clicked the Sort Button');
-    Sorted = !Sorted;
+    isSorted = !isSorted;
     return notes;
     }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     filteredList = sampleNotes;
   }
 
+  // Filter notes based on search input
   void onSearchTextChange (String searchInput) {
     setState(() {
-      filteredList = sampleNotes.where((note) => 
+      filteredList = sampleNotes.where((note) =>
       note.content!.toLowerCase().contains(searchInput.toLowerCase()) ||
       note.title!.toLowerCase().contains(searchInput.toLowerCase())
       ).toList();
-    });
+      });
     }
 
+  // Delete note at specified index
   void deleteNote (int index) {
     setState(() {
       filteredList.removeAt(index);
@@ -64,8 +65,7 @@ class _HomeState extends State<Home> {
         forceMaterialTransparency: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-             Text(
+          children: [const Text(
               'MemosPhere',
               style: TextStyle(
                 color: Headline,
@@ -75,15 +75,13 @@ class _HomeState extends State<Home> {
                 fontFamily: 'queensides',
                 ),
               ),
-            
             IconButton(
               onPressed: () {
                 setState(() {
                   filteredList = sortNotesByTime(filteredList);
                   });
                 },
-              
-              padding:  EdgeInsets.all(0),
+              padding:  const EdgeInsets.all(0),
               icon: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
@@ -92,7 +90,7 @@ class _HomeState extends State<Home> {
                   decoration: BoxDecoration(
                     color: button.withOpacity(0.8),
                     ),
-                  child:  Icon(
+                  child:  const Icon(
                       Icons.sort,
                       color: buttonText,
                       ),
@@ -115,28 +113,23 @@ class _HomeState extends State<Home> {
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(color: Stroke, width: 3),
+                  borderSide: const BorderSide(color: Stroke, width: 3),
                   ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Stroke, width: 2)
+                  borderSide: const BorderSide(color: Stroke, width: 2)
                   ),
-            
-            
                 hintText: 'Search notes...',
                 hintStyle: TextStyle(
                   color: Stroke.withOpacity(0.3),
                   fontSize: 16,
                   ),
-            
                 prefixIcon: Icon(
                   Icons.search,
                   color: Stroke
                   ),
-            
                 ),
               ),
-
 
             Expanded(
               child: ListView.builder(
@@ -145,11 +138,35 @@ class _HomeState extends State<Home> {
                 itemBuilder:(context, index) {
                     return  Card(
                     elevation: 3,
-                    shape: RoundedRectangleBorder(
+                    child: ListTile(
+                      onTap: () async {
+                        // Navigate to EditPage and await result
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => EditPage(note: filteredList[index],),
+                            ),
+                          );
+
+                        if(result != null && result.length >= 2) {
+                          final titleFromTheResult = result[0].text;
+                          final contentFromTheRresult = result[1].text;
+                          int originalIndex = sampleNotes.indexOf(filteredList[index]);
+                          final Note newNote = Note(
+                              id: sampleNotes[originalIndex].id,
+                              title: titleFromTheResult,
+                              content: contentFromTheRresult,
+                              lmodifydate: DateTime.now());
+
+                          setState(() {
+                            sampleNotes[originalIndex] =  newNote;
+                            filteredList = sampleNotes;
+                            });
+                          }
+                        },
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)
                         ),
-                    child: ListTile(
-                      onTap: () {},
                       tileColor: the30,
                       hoverColor: buttonhover,
                       splashColor: buttonhover.withOpacity(0.6),
@@ -178,7 +195,6 @@ class _HomeState extends State<Home> {
                             ]
                           ),
                         ),
-                      
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
@@ -191,12 +207,10 @@ class _HomeState extends State<Home> {
                             ),),
                           ),
                         ),
-                      
                       trailing: IconButton(
                         onPressed: () async {
-                          final result = await _Confirmation(context);
-                          
-                          if(result) {
+                          bool? result = await _confirmation(context);
+                          if(result == true) {
                             deleteNote(index);
                             }
                           },
@@ -215,27 +229,10 @@ class _HomeState extends State<Home> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => editpage()
-              )
-            );
-
-          if(result != null) {
-            setState(() {
-              sampleNotes.add(
-                Note(
-                id: sampleNotes.length, 
-                title: result[1], 
-                content: result[2], 
-                lmodifydate: DateTime.now())
-                );
-              filteredList = sampleNotes;
-              });
-            }
+          _showEditPage();
           },
 
+        elevation: 10,
         backgroundColor: button,
         child: Icon(
           Icons.add,
@@ -246,13 +243,37 @@ class _HomeState extends State<Home> {
       );
     }
 
-  Future<dynamic> _Confirmation(BuildContext context) {
+  void _showEditPage () async {
+    // Navigate to EditPage and await result
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => EditPage(),
+              ),
+            );
+
+          if(result != null && result.length >= 2) {
+            final idFromThesampleNotes = sampleNotes.length;
+            final titleFromTheResult = result[0].text;
+            final contentFromTheRresult = result[1].text;
+            final Note newNote = Note(
+                id: idFromThesampleNotes,
+                title: titleFromTheResult,
+                content: contentFromTheRresult,
+                lmodifydate: DateTime.now());
+            setState(() {
+              sampleNotes.add(newNote);
+              filteredList = sampleNotes;
+              });
+            }
+  }
+  
+  Future<dynamic> _confirmation(BuildContext context) {
     return showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
                               backgroundColor: the30,
-                              
                               icon: Icon(
                                 Icons.info,
                                 color: Stroke.withOpacity(0.6),
@@ -271,7 +292,6 @@ class _HomeState extends State<Home> {
                               content: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  
                                   ElevatedButton(
                                     onPressed: () {
                                       Navigator.pop(context, true);
