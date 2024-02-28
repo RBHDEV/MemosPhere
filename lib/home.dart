@@ -131,10 +131,9 @@ class _HomeState extends State<Home> {
                 ),
               ),
 
-
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.only(top: 30, bottom: 50),
+                padding: EdgeInsets.only(top: 30),
                 itemCount: filteredList.length,
                 itemBuilder:(context, index) {
                     return  Card(
