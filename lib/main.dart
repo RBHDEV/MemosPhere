@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:memosphere/home.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:memosphere/notes.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(notesAdapter());
+  
+  
   SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(statusBarColor: Colors.transparent)
-    );
+    SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   runApp(const MemosPhere());
 }
 

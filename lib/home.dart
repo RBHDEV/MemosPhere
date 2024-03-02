@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:memosphere/Boxes.dart';
 import 'package:memosphere/colors.dart';
 import 'package:memosphere/editpage.dart';
+import 'package:memosphere/notes.dart';
 import 'notelist.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,45 +18,21 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  List<Note> filteredList = [];
-  bool Sorted = false;
+ 
 
-  // Creating a list that have a function of returning notes that is sorted by the time
-  // at the both bools of Sorted
-  List<Note> sortNotesByTime (List<Note> notes) {
-    if(Sorted) {
-      notes.sort((a, b) => a.lmodifydate.compareTo(b.lmodifydate));
-      }
-    else {
-      notes.sort((b, a) => a.lmodifydate.compareTo(b.lmodifydate));
-      }
+  Future addNote (int id, String title, String content) {
+    final anote = notes(
+      id: id,
+      title: title,
+      content: content,
+      createdDate: DateTime.now());
 
-    print('You Clicked the Sort Button');
-    Sorted = !Sorted;
-    return notes;
-    }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    filteredList = sampleNotes;
+    final box = Boxes.getnotes();
+    box.put('id' ,anote);
+    print('The data that have been putted : ${anote.id}\n ${anote.title}\n ${anote.content}\n ${anote.createdDate}\n ');
   }
 
-  void onSearchTextChange (String searchInput) {
-    setState(() {
-      filteredList = sampleNotes.where((note) => 
-      note.content!.toLowerCase().contains(searchInput.toLowerCase()) ||
-      note.title!.toLowerCase().contains(searchInput.toLowerCase())
-      ).toList();
-    });
-    }
-
-  void deleteNote (int index) {
-    setState(() {
-      filteredList.removeAt(index);
-      });
-    }
+  
 
   @override
   Widget build(BuildContext context) {
