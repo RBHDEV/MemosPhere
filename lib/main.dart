@@ -1,19 +1,14 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:memosphere/home.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:memosphere/notes.dart';
 
 void main() async {
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(statusBarColor: Colors.transparent)
-    );
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  await Hive.openBox('NoteBox');
+  await Hive.openBox('thenotes');
 
   runApp(const MemosPhere());
 }

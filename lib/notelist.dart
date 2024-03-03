@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
 class Note {
 final id;
 String? title;
@@ -12,6 +10,7 @@ Note ({
   required this.content,
   required this.lmodifydate,
   });
+  
 }
 
 List<Note> sampleNotes = [
@@ -48,7 +47,7 @@ List<Note> sampleNotes = [
     content: 'with each passing day, our bond grows stronger and deeper',
     lmodifydate: DateTime(2024, 2, 18, 22, 01),
     ),
-
+  
   Note(
     id: '06',
     title: 'the stolen glances',
@@ -56,6 +55,7 @@ List<Note> sampleNotes = [
     lmodifydate: DateTime(2024, 1, 21, 8, 01),
     ),
 
+  
   ];
 
 
