@@ -1,4 +1,4 @@
 # memosphere
 
-A new Flutter project.
+A note taking app.
 
